@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { FirebaseAuthStrategy } from './auth/firebase-auth.strategy';
 import { AccommodationModule } from './accommodation/accommodation.module';
+import { ActivityModule } from './activity/activity.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AccommodationModule } from './accommodation/accommodation.module';
     ),
     UserModule,
     AccommodationModule,
+    ActivityModule,
   ],
   controllers: [AppController],
   providers: [AppService, FirebaseAuthStrategy],
