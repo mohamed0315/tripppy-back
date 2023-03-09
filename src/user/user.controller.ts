@@ -13,13 +13,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './schemas/user.schema';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiHeader,
   ApiOperation,
   ApiResponse,
   ApiTags,
-  ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
+  ApiUnauthorizedResponse
+} from "@nestjs/swagger";
 import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
 
 @ApiTags('users')
@@ -34,11 +35,8 @@ export class UserController {
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   @UseGuards(FirebaseAuthGuard)
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Authentification',
-  })
   async find(@Param('id') id: string): Promise<User> {
     return await this.userService.findOne(id);
   }
@@ -57,6 +55,7 @@ export class UserController {
 
   @Put(':id')
   @UseGuards(FirebaseAuthGuard)
+  @ApiBearerAuth()
   @ApiHeader({
     name: 'Authorization',
     description: 'Authentification',
@@ -67,6 +66,7 @@ export class UserController {
 
   @Delete(':id')
   @UseGuards(FirebaseAuthGuard)
+  @ApiBearerAuth()
   @ApiHeader({
     name: 'Authorization',
     description: 'Authentification',
