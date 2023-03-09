@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -19,9 +20,10 @@ import {
   ApiOperation,
   ApiResponse,
   ApiTags,
-  ApiUnauthorizedResponse
-} from "@nestjs/swagger";
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
+import { Request } from 'express';
 
 @ApiTags('users')
 @Controller('users')
@@ -37,7 +39,8 @@ export class UserController {
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(FirebaseAuthGuard)
-  async find(@Param('id') id: string): Promise<User> {
+  async find(@Param('id') id: string, @Req() request: Request): Promise<User> {
+    console.log(request['user']);
     return await this.userService.findOne(id);
   }
 
