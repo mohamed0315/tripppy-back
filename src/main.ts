@@ -8,9 +8,10 @@ async function bootstrap() {
     .setTitle('API TRIPPPY')
     .setDescription('TRIPPPY Back end Application ')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

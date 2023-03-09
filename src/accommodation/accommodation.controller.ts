@@ -10,13 +10,14 @@ import {
 } from '@nestjs/common';
 import { AccommodationService } from './accommodation.service';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiHeader,
   ApiOperation,
   ApiResponse,
   ApiTags,
-  ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
+  ApiUnauthorizedResponse
+} from "@nestjs/swagger";
 import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
 import { Accommodation } from './schemas/accommodation.schema';
 import { CreateAccommodationDto } from './dto/create-accommodation.dto';
@@ -35,6 +36,7 @@ export class AccommodationController {
 
   @Get(':id')
   @UseGuards(FirebaseAuthGuard)
+  @ApiBearerAuth()
   @ApiHeader({
     name: 'Authorization',
     description: 'Authentification',
@@ -52,6 +54,7 @@ export class AccommodationController {
 
   @Put(':id')
   @UseGuards(FirebaseAuthGuard)
+  @ApiBearerAuth()
   @ApiHeader({
     name: 'Authorization',
     description: 'Authentification',
@@ -64,6 +67,7 @@ export class AccommodationController {
   }
   @Delete(':id')
   @UseGuards(FirebaseAuthGuard)
+  @ApiBearerAuth()
   @ApiHeader({
     name: 'Authorization',
     description: 'Authentification',
