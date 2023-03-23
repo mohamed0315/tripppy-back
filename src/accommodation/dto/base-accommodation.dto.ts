@@ -8,10 +8,22 @@ export class BaseAccommodationDto {
   description: string;
 
   @ApiProperty()
-  price: string;
+  price: number;
 
   @ApiProperty()
-  location: string;
+  address: string;
+
+  @ApiProperty()
+  city: string;
+
+  @ApiProperty()
+  zipcode: string;
+
+  @ApiProperty()
+  country: string;
+
+  @ApiProperty()
+  descriptionDestination: string;
 
   @ApiProperty()
   userId: string;
