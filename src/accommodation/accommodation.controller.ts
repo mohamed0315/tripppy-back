@@ -35,16 +35,12 @@ export class AccommodationController {
   }
 
   @Get(':id')
-  @UseGuards(FirebaseAuthGuard)
-  @ApiBearerAuth()
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Authentification',
-  })
   async find(@Param('id') id: string): Promise<Accommodation> {
     return await this.accommodationService.findOne(id);
   }
   @Post()
+  @UseGuards(FirebaseAuthGuard)
+  @ApiBearerAuth()
   @ApiUnauthorizedResponse({ description: 'Non autorisé' })
   @ApiResponse({ status: 201, description: 'Le bien a bien été crée' })
   @ApiBody({ type: CreateAccommodationDto })

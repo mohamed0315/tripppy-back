@@ -6,6 +6,10 @@ import {
   Accommodation,
   AccommodationSchema,
 } from './schemas/accommodation.schema';
+import {
+  Destination,
+  DestinationSchema,
+} from '../destination/schemas/destination.schema';
 
 @Module({
   providers: [AccommodationService],
@@ -13,6 +17,9 @@ import {
   imports: [
     MongooseModule.forFeature([
       { name: Accommodation.name, schema: AccommodationSchema },
+    ]),
+    MongooseModule.forFeature([
+      { name: Destination.name, schema: DestinationSchema },
     ]),
   ],
 })

@@ -8,6 +8,8 @@ export class BaseDestinationDto {
   @ApiProperty()
   city: string;
   @ApiProperty()
+  zipcode: string;
+  @ApiProperty()
   description: string;
 
   @ApiProperty()
