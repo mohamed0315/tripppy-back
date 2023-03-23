@@ -24,8 +24,8 @@ export class Accommodation {
   @Prop({ required: true })
   isAvailable: boolean;
 
-  @Prop({ required: true })
-  createdAt: Date;
+  @Prop({ required: false })
+  createdAt?: Date;
 
   @Prop()
   completedAt?: Date;
