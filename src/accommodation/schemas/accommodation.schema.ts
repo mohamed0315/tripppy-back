@@ -26,6 +26,9 @@ export class Accommodation {
   isAvailable: boolean;
 
   @Prop({ required: false })
+  images?: string[];
+
+  @Prop({ required: false })
   createdAt?: Date;
 
   @Prop()

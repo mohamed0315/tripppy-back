@@ -11,6 +11,7 @@ import {
   Destination,
   DestinationDocument,
 } from '../destination/schemas/destination.schema';
+import { S3Service } from '../s3-service/s3-service.service';
 
 @Injectable()
 export class AccommodationService {
@@ -19,17 +20,45 @@ export class AccommodationService {
     private readonly model: Model<AccommodationDocument>,
     @InjectModel(Destination.name)
     private readonly destinationModel: Model<DestinationDocument>,
+    private readonly s3Service: S3Service,
   ) {}
   async findAll(): Promise<Accommodation[]> {
-    return await this.model.find().exec();
+    const accommodations = await this.model.find().exec();
+    const updatedAccommodations = await Promise.all(
+      accommodations.map(async (accommodation) => {
+        // Check if the images property exists before modifying it
+        if (accommodation.images) {
+          accommodation.images = await Promise.all(
+            accommodation.images.map((image) => {
+              return this.s3Service.downloadLink(image);
+            }),
+          );
+        }
+        return accommodation;
+      }),
+    );
+    return updatedAccommodations;
   }
 
   async findOne(id: string): Promise<Accommodation> {
-    return await this.model.findById(id).populate('destination').exec();
+    const accommodation = await this.model
+      .findById(id)
+      .populate('destination')
+      .exec();
+    if (accommodation.images) {
+      accommodation.images = await Promise.all(
+        accommodation.images.map(
+          async (image) => await this.s3Service.downloadLink(image),
+        ),
+      );
+    }
+
+    return accommodation;
   }
 
   async create(
     createAccommodationDto: CreateAccommodationDto,
+    fileKey: string,
   ): Promise<Accommodation | HttpException> {
     const newDestination = new this.destinationModel({
       name: createAccommodationDto.address,
@@ -44,6 +73,7 @@ export class AccommodationService {
     const newAccommodation = new this.model({
       ...createAccommodationDto,
       destination: savedDestination._id,
+      images: [fileKey],
       createdAt: new Date(),
     });
 

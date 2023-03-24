@@ -7,6 +7,7 @@ import { FirebaseAuthStrategy } from './auth/firebase-auth.strategy';
 import { AccommodationModule } from './accommodation/accommodation.module';
 import { ActivityModule } from './activity/activity.module';
 import { DestinationModule } from './destination/destination.module';
+import { S3Service } from './s3-service/s3-service.service';
 
 @Module({
   imports: [
@@ -19,6 +20,6 @@ import { DestinationModule } from './destination/destination.module';
     DestinationModule,
   ],
   controllers: [AppController],
-  providers: [AppService, FirebaseAuthStrategy],
+  providers: [AppService, FirebaseAuthStrategy, S3Service],
 })
 export class AppModule {}

@@ -10,9 +10,10 @@ import {
   Destination,
   DestinationSchema,
 } from '../destination/schemas/destination.schema';
+import { S3Service } from '../s3-service/s3-service.service';
 
 @Module({
-  providers: [AccommodationService],
+  providers: [AccommodationService, S3Service],
   controllers: [AccommodationController],
   imports: [
     MongooseModule.forFeature([
