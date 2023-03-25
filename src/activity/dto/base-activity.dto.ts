@@ -5,6 +5,19 @@ export class BaseActivityDto {
   name: string;
   @ApiProperty()
   description: string;
+
   @ApiProperty()
-  imageUrl?: string;
+  address: string;
+
+  @ApiProperty()
+  city: string;
+
+  @ApiProperty()
+  zipcode: string;
+
+  @ApiProperty()
+  country: string;
+
+  @ApiProperty()
+  descriptionDestination: string;
 }

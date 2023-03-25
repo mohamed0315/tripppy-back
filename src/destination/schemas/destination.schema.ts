@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Accommodation } from '../../accommodation/schemas/accommodation.schema';
+import { Activity } from "../../activity/schemas/activity.schema";
 
 export type DestinationDocument = Destination & Document;
 
@@ -23,6 +24,9 @@ export class Destination {
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Accommodation' }] })
   accommodations: Accommodation[];
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Activity' }] })
+  activities: Activity[];
 
   @Prop({ required: false })
   imageUrl?: string;
