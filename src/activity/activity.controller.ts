@@ -5,18 +5,23 @@ import {
   Get,
   Param,
   Post,
-  Put,
-} from '@nestjs/common';
+  Put, UploadedFile, UseInterceptors
+} from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ActivityService } from './activity.service';
 import { Activity } from './schemas/activity.schema';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
+import { FileInterceptor } from "@nestjs/platform-express";
+import { S3Service } from "../s3-service/s3-service.service";
 
 @ApiTags('activities')
 @Controller('activities')
 export class ActivityController {
-  constructor(private readonly activityService: ActivityService) {}
+  constructor(
+    private readonly activityService: ActivityService,
+    private readonly s3Service: S3Service,
+  ) {}
 
   @ApiOperation({ summary: 'Get all activities' })
   @Get()
@@ -30,10 +35,20 @@ export class ActivityController {
   }
 
   @Post()
+  @UseInterceptors(FileInterceptor('image'))
   @ApiResponse({ status: 201, description: "L'activité a bien été crée" })
   @ApiBody({ type: CreateActivityDto })
-  async create(@Body() createActivityDto: CreateActivityDto) {
-    return await this.activityService.create(createActivityDto);
+  async create(
+    @Body() createActivityDto: CreateActivityDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const { buffer, originalname, mimetype } = file;
+    const fileKey = await this.s3Service.uploadFileActivity(
+      buffer,
+      originalname,
+      mimetype,
+    );
+    return await this.activityService.create(createActivityDto, fileKey);
   }
 
   @Put(':id')

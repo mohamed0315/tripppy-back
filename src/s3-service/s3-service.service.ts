@@ -35,6 +35,23 @@ export class S3Service {
     return key;
   }
 
+  async uploadFileActivity(buffer: Buffer, filename: string, mimtype: string) {
+    const key = uuid();
+    const params: PutObjectCommandInput = {
+      Bucket: 'tripppy',
+      Key: `activity/${uuid()}`,
+      Body: buffer,
+      ContentType: mimtype,
+    };
+
+    const upload = await new Upload({
+      client: this.client,
+      params: params,
+    }).done();
+
+    return key;
+  }
+
   async downloadLink(key: string) {
     const getObjectCommand = new GetObjectCommand({
       Bucket: 'tripppy',

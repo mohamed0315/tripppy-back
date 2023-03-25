@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+import { Destination } from '../../destination/schemas/destination.schema';
 
 export type ActivityDocument = Activity & Document;
 
@@ -12,7 +13,10 @@ export class Activity {
   description: string;
 
   @Prop({ required: false })
-  imageUrl?: string;
+  image?: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'Destination', required: true })
+  destination: Destination;
 
   @Prop({ required: true })
   createdAt: Date;
