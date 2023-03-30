@@ -40,7 +40,7 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(FirebaseAuthGuard)
   async find(@Param('id') id: string, @Req() request: Request): Promise<User> {
-    console.log("request['user']");
+    console.log(request['user'].email);
     return await this.userService.findOne(id);
   }
 

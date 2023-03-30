@@ -12,6 +12,7 @@ import {
   DestinationDocument,
 } from '../destination/schemas/destination.schema';
 import { S3Service } from '../s3-service/s3-service.service';
+import { User, UserDocument } from '../user/schemas/user.schema';
 
 @Injectable()
 export class AccommodationService {
@@ -20,10 +21,15 @@ export class AccommodationService {
     private readonly model: Model<AccommodationDocument>,
     @InjectModel(Destination.name)
     private readonly destinationModel: Model<DestinationDocument>,
+    @InjectModel(User.name)
+    private readonly userModel: Model<UserDocument>,
     private readonly s3Service: S3Service,
   ) {}
   async findAll(): Promise<Accommodation[]> {
-    const accommodations = await this.model.find().exec();
+    const accommodations = await this.model
+      .find()
+      .populate('destination')
+      .exec();
     const updatedAccommodations = await Promise.all(
       accommodations.map(async (accommodation) => {
         // Check if the images property exists before modifying it
@@ -59,6 +65,7 @@ export class AccommodationService {
   async create(
     createAccommodationDto: CreateAccommodationDto,
     fileKey: string,
+    userEmail: string,
   ): Promise<Accommodation | HttpException> {
     const newDestination = new this.destinationModel({
       name: createAccommodationDto.address,
@@ -81,6 +88,14 @@ export class AccommodationService {
 
     await this.destinationModel
       .findByIdAndUpdate(savedDestination._id, {
+        $push: { accommodations: savedAccommodation._id },
+      })
+      .exec();
+
+    const user = await this.userModel.findOne({ email: userEmail }).exec();
+
+    await this.userModel
+      .findByIdAndUpdate(user._id, {
         $push: { accommodations: savedAccommodation._id },
       })
       .exec();
