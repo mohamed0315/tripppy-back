@@ -20,7 +20,10 @@ export class UserService {
   }
 
   async findOneByEmail(email: string): Promise<User> {
-    return await this.model.findOne({ email: email }).exec();
+    return await this.model
+      .findOne({ email: email })
+      .populate('accommodations')
+      .exec();
   }
 
   async create(createUserDto: CreateUserDto): Promise<User | HttpException> {

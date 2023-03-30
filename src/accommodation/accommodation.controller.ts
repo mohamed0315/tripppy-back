@@ -5,11 +5,11 @@ import {
   Get,
   Param,
   Post,
-  Put,
+  Put, Req,
   UploadedFile,
   UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+  UseInterceptors
+} from "@nestjs/common";
 import { AccommodationService } from './accommodation.service';
 import {
   ApiBearerAuth,
@@ -26,6 +26,7 @@ import { CreateAccommodationDto } from './dto/create-accommodation.dto';
 import { UpdateAccommodationDto } from './dto/update-accommodation.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { S3Service } from '../s3-service/s3-service.service';
+import { Request } from "express";
 
 @ApiTags('accommodations')
 @Controller('accommodation')
@@ -55,7 +56,10 @@ export class AccommodationController {
   async create(
     @Body() createAccommodationDto: CreateAccommodationDto,
     @UploadedFile() file: Express.Multer.File,
+    @Req() request: Request,
   ) {
+    const userEmail = request['user'].email;
+    console.log('from accommodation', request['user'].email);
     const { buffer, originalname, mimetype } = file;
     const fileKey = await this.s3Service.uploadFile(
       buffer,
@@ -67,6 +71,7 @@ export class AccommodationController {
     return await this.accommodationService.create(
       createAccommodationDto,
       fileKey,
+      userEmail,
     );
   }
 

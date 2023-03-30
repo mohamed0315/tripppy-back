@@ -25,6 +25,9 @@ export class Accommodation {
   @Prop({ required: true })
   isAvailable: boolean;
 
+  @Prop({ required: true, enum: ['appartement', 'maison', 'chambre', 'autre'] })
+  category: string;
+
   @Prop({ required: false })
   images?: string[];
 
