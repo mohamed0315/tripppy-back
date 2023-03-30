@@ -26,7 +26,10 @@ export class BaseAccommodationDto {
   descriptionDestination: string;
 
   @ApiProperty()
-  userId: string;
+  user: string;
+
+  @ApiProperty()
+  category: string;
 
   @ApiProperty()
   isAvailable: boolean;
