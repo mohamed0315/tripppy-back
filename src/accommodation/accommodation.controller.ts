@@ -3,7 +3,7 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
+  Param, Patch,
   Post,
   Put, Req,
   UploadedFile,
@@ -78,23 +78,32 @@ export class AccommodationController {
   @Put(':id')
   @UseGuards(FirebaseAuthGuard)
   @ApiBearerAuth()
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Authentification',
-  })
   async update(
     @Param('id') id: string,
     @Body() updateAccommodationDto: UpdateAccommodationDto,
   ) {
     return await this.accommodationService.update(id, updateAccommodationDto);
   }
+
+  @Patch(':id/image')
+  async addImage(
+    @Param('id') id: string,
+    @UploadedFile() image: Express.Multer.File,
+  ): Promise<Accommodation> {
+    const { buffer, originalname, mimetype } = image;
+    const fileKey = await this.s3Service.uploadFile(
+      buffer,
+      originalname,
+      mimetype,
+    );
+    console.log(fileKey);
+    console.log(await this.s3Service.downloadLink(fileKey));
+    return this.accommodationService.addImageToAccommodation(id, fileKey);
+  }
+
   @Delete(':id')
   @UseGuards(FirebaseAuthGuard)
   @ApiBearerAuth()
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Authentification',
-  })
   async delete(@Param('id') id: string) {
     return await this.accommodationService.delete(id);
   }
