@@ -48,6 +48,7 @@ export class ActivityController {
       originalname,
       mimetype,
     );
+    console.log(await this.s3Service.downloadLink(fileKey));
     return await this.activityService.create(createActivityDto, fileKey);
   }
 

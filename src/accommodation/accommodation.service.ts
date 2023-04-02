@@ -111,6 +111,24 @@ export class AccommodationService {
       new: true,
     });
   }
+
+  async addImageToAccommodation(
+    id: string,
+    image: string,
+  ): Promise<Accommodation> {
+    const accommodation = await this.model.findByIdAndUpdate(
+      id,
+      { $addToSet: { images: image } },
+      { new: true },
+    );
+
+    if (!accommodation) {
+      throw new Error(`Accommodation with id ${id} not found`);
+    }
+
+    return accommodation;
+  }
+
   async delete(id: string): Promise<Accommodation> {
     return this.model.findByIdAndRemove(id);
   }

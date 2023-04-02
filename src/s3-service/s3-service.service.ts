@@ -39,7 +39,7 @@ export class S3Service {
     const key = uuid();
     const params: PutObjectCommandInput = {
       Bucket: 'tripppy',
-      Key: `activity/${uuid()}`,
+      Key: key,
       Body: buffer,
       ContentType: mimtype,
     };
