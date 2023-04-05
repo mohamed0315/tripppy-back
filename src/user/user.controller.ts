@@ -52,6 +52,8 @@ export class UserController {
   }
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(FirebaseAuthGuard)
   @ApiUnauthorizedResponse({ description: 'Non autorisé' })
   @ApiResponse({ status: 201, description: "L'utilisateur a bien été crée" })
   @ApiResponse({

@@ -32,6 +32,7 @@
     "aws-sdk": "^2.1342.0",
     "class-transformer": "^0.5.1",
     "firebase-admin": "^11.5.0",
+    "moment": "^2.29.4",
     "mongoose": "^6.10.1",
     "multer": "^1.4.5-lts.1",
     "passport": "^0.6.0",
