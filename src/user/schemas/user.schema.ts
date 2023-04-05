@@ -21,7 +21,7 @@ export class User {
   @Prop({ required: true })
   createdAt: Date;
 
-  @Prop()
+  @Prop({ required: false })
   dateNaiss?: Date;
 
   @Prop()
