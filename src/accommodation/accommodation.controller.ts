@@ -36,10 +36,16 @@ export class AccommodationController {
     private readonly s3Service: S3Service,
   ) {}
 
-  @ApiOperation({ summary: 'Get all accommodations' })
+  @ApiOperation({ summary: 'Récupération de tous les logements' })
   @Get()
   async index() {
     return await this.accommodationService.findAll();
+  }
+
+  @ApiOperation({ summary: 'Récupération des logements par destination' })
+  @Get('zipcode/:zipcode')
+  async findByDestination(@Param('zipcode') zipcode: string) {
+    return await this.accommodationService.findByZipCode(zipcode);
   }
 
   @Get(':id')

@@ -36,7 +36,11 @@ export class ActivityService {
   }
 
   async findOne(id: string): Promise<Activity> {
-    return await this.model.findById(id).exec();
+    const activity = await this.model.findById(id).populate('destination').exec();
+    if (activity.image) {
+      activity.image = await this.s3Service.downloadLink(activity.image);
+    }
+    return activity;
   }
 
   async create(

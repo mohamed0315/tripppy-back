@@ -46,6 +46,36 @@ export class AccommodationService {
     return updatedAccommodations;
   }
 
+  async findByZipCode(zipcode: string): Promise<Accommodation[]> {
+    const accommodations = await this.model
+      .find()
+      .populate('destination')
+      .exec();
+    const updatedAccommodations = await Promise.all(
+      accommodations.map(async (accommodation) => {
+        // Check if the images property exists before modifying it
+        if (accommodation.images) {
+          accommodation.images = await Promise.all(
+            accommodation.images.map((image) => {
+              return this.s3Service.downloadLink(image);
+            }),
+          );
+        }
+        return accommodation;
+      }),
+    );
+
+    const filteredAccommodations = updatedAccommodations.filter(
+      (accommodation) => {
+        return (
+          accommodation.destination &&
+          accommodation.destination.zipcode === zipcode
+        );
+      },
+    );
+    return filteredAccommodations;
+  }
+
   async findOne(id: string): Promise<Accommodation> {
     const accommodation = await this.model
       .findById(id)
