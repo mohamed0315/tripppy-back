@@ -97,6 +97,11 @@ export class AccommodationService {
     fileKey: string,
     userEmail: string,
   ): Promise<Accommodation | HttpException> {
+    let destination: DestinationDocument;
+    const existedDestination = await this.destinationModel.findOne({
+      zipcode: createAccommodationDto.zipcode,
+    });
+
     const newDestination = new this.destinationModel({
       name: createAccommodationDto.address,
       country: createAccommodationDto.country,
@@ -105,11 +110,16 @@ export class AccommodationService {
       description: createAccommodationDto.descriptionDestination,
       createdAt: new Date(),
     });
-    const savedDestination = await newDestination.save();
+
+    if (!existedDestination) {
+      destination = await newDestination.save();
+    } else {
+      destination = existedDestination;
+    }
 
     const newAccommodation = new this.model({
       ...createAccommodationDto,
-      destination: savedDestination._id,
+      destination: destination._id,
       images: [fileKey],
       createdAt: new Date(),
     });
@@ -117,7 +127,7 @@ export class AccommodationService {
     const savedAccommodation = await newAccommodation.save();
 
     await this.destinationModel
-      .findByIdAndUpdate(savedDestination._id, {
+      .findByIdAndUpdate(destination._id, {
         $push: { accommodations: savedAccommodation._id },
       })
       .exec();
