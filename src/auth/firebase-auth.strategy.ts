@@ -1,8 +1,9 @@
-import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ExtractJwt, Strategy } from 'passport-firebase-jwt';
-import * as firebaseConfig from './firebase.config.json';
-import * as firebase from 'firebase-admin';
+import { PassportStrategy } from "@nestjs/passport";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { ExtractJwt, Strategy } from "passport-firebase-jwt";
+import * as firebaseConfig from "./firebase.config.json";
+import * as firebase from "firebase-admin";
+import { Request } from "express";
 
 const firebase_params = {
   type: firebaseConfig.type,
@@ -32,12 +33,16 @@ export class FirebaseAuthStrategy extends PassportStrategy(
     });
   }
   async validate(token: string, req: Request) {
-    return await this.defaultApp
-      .auth()
-      .verifyIdToken(token, true)
-      .catch((err) => {
-        console.log(err);
-        throw new UnauthorizedException(err.message);
-      });
+    try {
+      const decodedToken = await this.defaultApp
+        .auth()
+        .verifyIdToken(token, true);
+      return {
+        email: decodedToken.email,
+        uid: decodedToken.uid,
+      };
+    } catch (err) {
+      throw new UnauthorizedException(err.message);
+    }
   }
 }

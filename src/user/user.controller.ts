@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -13,6 +14,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './schemas/user.schema';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiHeader,
   ApiOperation,
@@ -21,6 +23,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
+import { Request } from 'express';
 
 @ApiTags('users')
 @Controller('users')
@@ -34,16 +37,23 @@ export class UserController {
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   @UseGuards(FirebaseAuthGuard)
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Authentification',
-  })
-  async find(@Param('id') id: string): Promise<User> {
+  async find(@Param('id') id: string, @Req() request: Request): Promise<User> {
+    console.log(request['user'].email);
     return await this.userService.findOne(id);
   }
 
+  @Get('/email/:email')
+  @ApiBearerAuth()
+  @UseGuards(FirebaseAuthGuard)
+  async findByEmail(@Param('email') email: string): Promise<User> {
+    return await this.userService.findOneByEmail(email);
+  }
+
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(FirebaseAuthGuard)
   @ApiUnauthorizedResponse({ description: 'Non autorisé' })
   @ApiResponse({ status: 201, description: "L'utilisateur a bien été crée" })
   @ApiResponse({
@@ -57,6 +67,7 @@ export class UserController {
 
   @Put(':id')
   @UseGuards(FirebaseAuthGuard)
+  @ApiBearerAuth()
   @ApiHeader({
     name: 'Authorization',
     description: 'Authentification',
@@ -67,6 +78,7 @@ export class UserController {
 
   @Delete(':id')
   @UseGuards(FirebaseAuthGuard)
+  @ApiBearerAuth()
   @ApiHeader({
     name: 'Authorization',
     description: 'Authentification',

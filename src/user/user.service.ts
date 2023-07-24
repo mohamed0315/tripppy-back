@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -17,6 +17,13 @@ export class UserService {
 
   async findOne(id: string): Promise<User> {
     return await this.model.findById(id).exec();
+  }
+
+  async findOneByEmail(email: string): Promise<User> {
+    return await this.model
+      .findOne({ email: email })
+      .populate('accommodations')
+      .exec();
   }
 
   async create(createUserDto: CreateUserDto): Promise<User | HttpException> {
